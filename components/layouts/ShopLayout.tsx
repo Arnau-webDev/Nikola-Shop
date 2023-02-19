@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { Navbar } from '../ui/Navbar';
 
 interface Props {
     title: string,
@@ -25,7 +26,7 @@ export const ShopLayout: React.FC<Props> = ({ title, pageDescription, imageFullU
 			</Head>
 
 			<nav>
-
+				<Navbar />
 			</nav>
 
 			{}

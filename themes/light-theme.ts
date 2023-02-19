@@ -16,6 +16,7 @@ export const lightTheme = createTheme({
 		MuiLink: {
 			defaultProps: {
 				underline: 'none',
+				color: 'black'
 			},
 		},
 		MuiAppBar: {
@@ -54,9 +55,12 @@ export const lightTheme = createTheme({
 			},
 			styleOverrides: {
 				root: {
+					backgroundColor: 'white',
+					color: 'black',
 					textTransform: 'none',
 					boxShadow: 'none',
 					borderRadius: 10,
+					textDecoration: 'none',
 					':hover': {
 						backgroundColor: 'rgba(0,0,0,0.05)',
 						transition: 'all 0.3s ease-in-out'
