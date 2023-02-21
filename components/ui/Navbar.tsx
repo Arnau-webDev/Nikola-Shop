@@ -4,7 +4,7 @@ import { AppBar, Link, Toolbar, Typography, Box, Button, IconButton, Badge } fro
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 
 
-export const Navbar = () => {
+export const Navbar: React.FC = () => {
 	return (
 		<AppBar>
 			<Toolbar>
