@@ -3,35 +3,35 @@ import NextLink from 'next/link';
 import { ShopLayout } from '@/components/layouts';
 
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Typography, Grid, Chip, Link } from '@mui/material';
+import { Typography, Grid, Chip, Link, Box } from '@mui/material';
 
 const columns: GridColDef[] = [
 	{ field: 'id', headerName: 'ID', width: 100 },
-	{ field: 'fullname', headerName: 'Nombre Completo', width: 300 },
+	{ field: 'fullname', headerName: 'Complete Name', width: 300 },
 
 	{
-		field: 'paid',
-		headerName: 'Pagada',
+		field: 'Paid',
+		headerName: 'Payment',
 		description: 'Muestra información si está pagada la orden o no',
 		width: 200,
 		renderCell: (params: GridRenderCellParams) => {
 			return (
 				params.row.paid
-					? <Chip color="success" label="Pagada" variant='outlined' />
-					: <Chip color="error" label="No pagada" variant='outlined' />
+					? <Chip color="success" label="Is Paid" variant='outlined' />
+					: <Chip color="error" label="Is Not Paid" variant='outlined' />
 			);
 		}
 	},
 	{
-		field: 'orden',
-		headerName: 'Ver orden',
+		field: 'Order',
+		headerName: 'View Order',
 		width: 200,
 		sortable: false,
 		renderCell: (params: GridRenderCellParams) => {
 			return (
 				<NextLink href={`/orders/${ params.row.id }`} passHref legacyBehavior>
 					<Link underline='always' color='secondary'>
-                        Ver orden
+                        View Order
 					</Link>
 				</NextLink>
 			);
@@ -53,7 +53,7 @@ const HistoryPage = () => {
 		<ShopLayout title="Order History" pageDescription="Order Hystory from client">
 			<Typography variant='h1' component='h1'>Order History</Typography>
 
-			<Grid container>
+			<Grid container sx={{ mt: 3}}>
 				<Grid item xs={12} sx={{ height: 650, width: '100%'}}>
 					<DataGrid 
 						rows={ rows }
