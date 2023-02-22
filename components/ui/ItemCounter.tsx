@@ -1,11 +1,8 @@
 import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 
-interface Props {
 
-}
-
-export const ItemCounter: React.FC<Props> = () => {
+export const ItemCounter: React.FC = () => {
 	return (
 		<Box display='flex' alignItems='center'>
 			<IconButton sx={{ paddingLeft: 0}}>
