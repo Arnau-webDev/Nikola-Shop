@@ -3,15 +3,14 @@ import { NextPage } from 'next';
 import { Typography } from '@mui/material';
 import { ShopLayout } from '@/components/layouts';
 
-import { ProductList } from '@/components/products';
 import { useProducts } from '@/hooks';
+import { ProductList } from '@/components/products';
+import { FullScreenLoading } from '@/components/ui/FullScreenLoading';
 
 
 const Home: NextPage = function Home() {
 
 	const { products, isLoading } = useProducts('/products');
-
-	console.log(products);
 
 	return (
 		<ShopLayout title='Nikola-Shop - Home' pageDescription='Find the best products from Nikola Shop'>
@@ -20,7 +19,7 @@ const Home: NextPage = function Home() {
 
 			{ 
 				isLoading
-					? <h1>Loading...</h1> 
+					? <FullScreenLoading />
 					: <ProductList products={products} />
 			}
 			
