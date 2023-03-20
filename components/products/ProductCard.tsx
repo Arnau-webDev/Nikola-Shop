@@ -9,7 +9,6 @@ interface Props {
     product: IProduct
 }
 
-
 export const ProductCard: React.FC<Props> = ({ product }) => {
 
 	const [isHovered, setIsHovered] = useState(false);
@@ -28,7 +27,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
 			onMouseLeave={() => setIsHovered(false)}
 		>
 			<Card>
-				<NextLink href='/product/slug' passHref prefetch={false} legacyBehavior>
+				<NextLink href={`/product/${product.slug}`} passHref prefetch={false} legacyBehavior>
 					<Link>
 						<CardActionArea>
 							<CardMedia 

@@ -29,8 +29,6 @@ const ProductByGenderPage: NextPage = () => {
 
 	const genderCapitalized = gender.charAt(0).toLocaleUpperCase() + gender.slice(1);
 
-	console.log(genderCapitalized);
-  
 	return (
   
 		<ShopLayout
