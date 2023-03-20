@@ -13,7 +13,7 @@ import { FullScreenLoading } from '@/components/ui/FullScreenLoading';
 const validGenders = ['men', 'kid', 'women'];
 
 
-const ProductByGenderPage = () => {
+const ProductByGenderPage: NextPage = () => {
 
 	const router = useRouter();
   

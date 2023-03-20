@@ -1,10 +1,20 @@
+import { useContext } from 'react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+
+import { UIContext } from '@/context';
 
 import { AppBar, Link, Toolbar, Typography, Box, Button, IconButton, Badge } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 
 
 export const Navbar: React.FC = () => {
+
+	const { query } = useRouter();
+	const activeGenderPage = query.gender;
+
+	const { toggleSideMenu } = useContext(UIContext);
+
 	return (
 		<AppBar>
 			<Toolbar>
@@ -20,17 +30,17 @@ export const Navbar: React.FC = () => {
 				<Box sx={{ display: {xs: 'none', sm: 'block'}}}>
 					<NextLink href={'/category/men'} passHref legacyBehavior>
 						<Link>
-							<Button>Men</Button>
+							<Button color={activeGenderPage === 'men' ? 'primary' : 'info'}>Men</Button>
 						</Link>
 					</NextLink>
 					<NextLink href={'/category/women'} passHref legacyBehavior>
 						<Link>
-							<Button>Women</Button>
+							<Button color={activeGenderPage === 'women' ? 'primary' : 'info'}>Women</Button>
 						</Link>
 					</NextLink>
 					<NextLink href={'/category/kid'} passHref legacyBehavior>
 						<Link>
-							<Button>Kids</Button>
+							<Button color={activeGenderPage === 'kid' ? 'primary' : 'info'}>Kids</Button>
 						</Link>
 					</NextLink>
 				</Box>
@@ -51,7 +61,7 @@ export const Navbar: React.FC = () => {
 					</Link>
 				</NextLink>
 
-				<Button>Menu</Button>
+				<Button onClick={toggleSideMenu}>Menu</Button>
 			</Toolbar>
 		</AppBar>
 	);
