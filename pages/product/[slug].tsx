@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GetStaticPaths, GetStaticPathsContext, GetStaticProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
 import { ProductSizeSelector, ProductSlideShow } from '@/components/products';
 import { ItemCounter } from '@/components/ui/ItemCounter';
@@ -35,6 +35,17 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 		}));
 	};
 
+	const onAddProduct = () => {
+		console.log('Product quantity', tempCartProduct.quantity);
+	};
+
+	const onUpdateQuantity = (quantity: number ) => {
+		setTempCartProduct( currentProduct => ({
+			...currentProduct,
+			quantity
+		}));
+	};
+
 	return (
 		<ShopLayout title={product.title} pageDescription={product.description}>
 			<Grid container spacing={3}>
@@ -49,7 +60,11 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 
 						<Box sx={{ my: 2}}>
 							<Typography variant='subtitle2'>Quantity</Typography>
-							<ItemCounter />
+							<ItemCounter 
+								currentValue={tempCartProduct.quantity}
+								updateQuantity={onUpdateQuantity}
+								maxValue={product.inStock}
+							/>
 							<ProductSizeSelector 
 								sizes={product.sizes} 
 								selectedSize={tempCartProduct.size}
@@ -60,7 +75,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 						{
 							(product.inStock > 0) 
 								? (
-									<Button color='secondary' className='circular-btn'>
+									<Button color='secondary' className='circular-btn' onClick={onAddProduct}>
 										{ tempCartProduct.size ? 'Add to cart' : 'Select size' }
 									</Button>
 								)
@@ -78,25 +93,25 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 	);
 };
 
-// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
-
-export const getStaticPaths: GetStaticPaths = async (ctx: GetStaticPathsContext) => {
-	const productSlugs = await dbProducts.getAllProductSlugs();  
-
-	return {
-		paths: productSlugs.map( obj => ({
-			params: { slug: obj.slug }
-		})),
-		fallback: 'blocking'
-	};
-};
 
 // You should use getStaticProps when:
 //- The data required to render the page is available at build time ahead of a user’s request.
 //- The data comes from a headless CMS.
 //- The data can be publicly cached (not user-specific).
 //- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
-// import { GetStaticProps } from 'next'
+
+export const getStaticPaths: GetStaticPaths = async (ctx) => {
+	const productSlugs = await dbProducts.getAllProductSlugs();
+	
+	return {
+		paths: productSlugs.map( ({ slug }) => ({
+			params: {
+				slug
+			}
+		})),
+		fallback: 'blocking'
+	};
+};
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
 	const { params } = ctx;
@@ -118,5 +133,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 		revalidate: 60 * 60 * 24
 	};
 };
+
+
 
 export default ProductPage;
