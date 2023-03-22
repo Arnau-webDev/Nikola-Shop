@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { GetStaticPaths, GetStaticPathsContext, GetStaticProps, NextPage } from 'next';
+
 import { ProductSizeSelector, ProductSlideShow } from '@/components/products';
 import { ItemCounter } from '@/components/ui/ItemCounter';
 import { ShopLayout } from '@/components/layouts';
 
-import { IProduct } from '@/interfaces';
+import { ICartProduct, IProduct, IvalidSizes } from '@/interfaces';
 
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import { dbProducts } from '@/database';
@@ -13,8 +15,25 @@ interface Props {
 	product: IProduct
 }
 
-
 const ProductPage: NextPage<Props> = ({ product }) => {
+
+	const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+		_id: product._id,
+		image: product.images[0],
+		price: product.price,
+		size: undefined,
+		slug: product.slug,
+		title: product.title,
+		gender: product.gender,
+		quantity: 1,
+	});
+
+	const selectedSize = (size: IvalidSizes) => {
+		setTempCartProduct( currentProduct => ({
+			...currentProduct,
+			size
+		}));
+	};
 
 	return (
 		<ShopLayout title={product.title} pageDescription={product.description}>
@@ -31,14 +50,22 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 						<Box sx={{ my: 2}}>
 							<Typography variant='subtitle2'>Quantity</Typography>
 							<ItemCounter />
-							<ProductSizeSelector sizes={product.sizes} />
+							<ProductSizeSelector 
+								sizes={product.sizes} 
+								selectedSize={tempCartProduct.size}
+								onSelectedSize={selectedSize}
+							/>
 						</Box>
 
-						<Button color='secondary' className='circular-btn'>
-							Add to cart
-						</Button>
-
-						{/* <Chip label='No products available' color='error' variant='outlined' /> */}
+						{
+							(product.inStock > 0) 
+								? (
+									<Button color='secondary' className='circular-btn'>
+										{ tempCartProduct.size ? 'Add to cart' : 'Select size' }
+									</Button>
+								)
+								: ( <Chip label='No products available' color='error' variant='outlined' /> )
+						}
 
 						<Box sx={{ mt: 3}}>
 							<Typography variant='subtitle2'>Description</Typography>
