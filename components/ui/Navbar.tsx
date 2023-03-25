@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { UIContext } from '@/context';
+import { CartContext, UIContext } from '@/context';
 
 import { AppBar, Link, Toolbar, Typography, Box, Button, IconButton, Badge, Input, InputAdornment } from '@mui/material';
 import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
@@ -14,6 +14,7 @@ export const Navbar: React.FC = () => {
 	const activeGenderPage = query.gender;
 
 	const { toggleSideMenu } = useContext(UIContext);
+	const { numberOfItems } = useContext(CartContext);
 
 	const [searchTerm, setSearchTerm] = useState('');
 	const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -55,7 +56,7 @@ export const Navbar: React.FC = () => {
 
 				<Box flex={1}/>
 
-				{/* Pantallas pantallas grandes */}
+				{/* Medium or big screens */}
 				{
 					isSearchVisible 
 						? (
@@ -91,7 +92,7 @@ export const Navbar: React.FC = () => {
 						)
 				}
 
-				{/* Pantallas pequeñas */}
+				{/* Small screens */}
 				<IconButton
 					sx={{ display: { xs: 'flex', sm: 'none' } }}
 					onClick={ toggleSideMenu }
@@ -102,7 +103,7 @@ export const Navbar: React.FC = () => {
 				<NextLink href={'/cart'} passHref legacyBehavior>
 					<Link>
 						<IconButton>
-							<Badge badgeContent={3} color='secondary'>
+							<Badge badgeContent={numberOfItems > 9 ? '+9' : numberOfItems} color='secondary'>
 								<ShoppingCartOutlined />
 							</Badge>
 						</IconButton>
