@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import NextLink from 'next/link';
 import { AuthLayout } from '../../components/layouts';
 
+import { nikolaApi } from '@/api';
 import { validations } from '@/utils';
 
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
+
 import { useForm } from 'react-hook-form';
 
 type FormData = {
@@ -14,14 +18,38 @@ type FormData = {
 const LoginPage = () => {
 
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+	const [showError, setShowError] = useState(false);
 
-	const onLoginUser = (data: FormData) => {
+	const onLoginUser = async (data: FormData) => {
+
+		const { email, password } = data;
+		setShowError(false);
+
+		try {
+			const { data } = await nikolaApi.post('/user/login', { email, password });
+			const { token, user } = data;
+
+			console.log(token, user);
+		} catch (error) {
+			console.log('Credentials error');
+			setShowError(true);
+
+			setTimeout(() => setShowError(false), 3000);
+		}
+
 	};
 
 	return (
 		<AuthLayout title={'Login'}>
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box sx={{ width: 350, padding:'10px 20px' }}>
+					<Chip 
+						label='User or password does not exist'
+						color='error'
+						icon={ <ErrorOutline /> }
+						className='fadeIn'
+						sx={{ display: showError ? 'flex' : 'none', my: 4, mx: 4}}
+					/>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant='h1' component="h1">Log In</Typography>

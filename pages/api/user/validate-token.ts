@@ -4,8 +4,6 @@ import { db } from '@/database';
 import { User } from '@/models';
 import { jwt } from '@/utils';
 
-import bcrypt from 'bcryptjs';
-
 type Data = 
 | { message: string }
 | { 
@@ -34,7 +32,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
 const checkJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
-	const { token = ''} = req.headers;
+	const { token = ''} = req.cookies;
 
 	let userId = '';
 
