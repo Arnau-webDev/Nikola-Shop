@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 type FormData = {
 	email: string,
 	password: string,
-  };
+};
 
 const LoginPage = () => {
 
