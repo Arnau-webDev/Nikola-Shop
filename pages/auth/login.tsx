@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { AuthLayout } from '../../components/layouts';
 
-import { nikolaApi } from '@/api';
+import { AuthContext } from '@/context';
 import { validations } from '@/utils';
 
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
 
 import { useForm } from 'react-hook-form';
+
+import { ErrorOutline } from '@mui/icons-material';
 
 type FormData = {
 	email: string,
@@ -17,6 +19,8 @@ type FormData = {
 
 const LoginPage = () => {
 
+	const router = useRouter();
+	const { loginUser } = useContext( AuthContext);
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 	const [showError, setShowError] = useState(false);
 
@@ -25,18 +29,15 @@ const LoginPage = () => {
 		const { email, password } = data;
 		setShowError(false);
 
-		try {
-			const { data } = await nikolaApi.post('/user/login', { email, password });
-			const { token, user } = data;
+		const isValidLogin = await loginUser(email, password);
 
-			console.log(token, user);
-		} catch (error) {
-			console.log('Credentials error');
+		if (!isValidLogin) {
 			setShowError(true);
-
 			setTimeout(() => setShowError(false), 3000);
+			return;
 		}
 
+		router.replace('/');
 	};
 
 	return (
