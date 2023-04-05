@@ -1,4 +1,4 @@
-import { PropsWithChildren, useReducer } from 'react';
+import { useEffect, useReducer, PropsWithChildren } from 'react';
 import { AuthContext, authReducer, registerResponse } from './';
 
 import axios from 'axios';
@@ -20,6 +20,27 @@ const Auth_INITIAL_STATE: AuthState = {
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
+
+	useEffect(() => {
+		const cookiesToken = Cookie.get('token');
+
+		if(!cookiesToken) return; 
+		checkToken();
+	}, [])
+	;
+
+	const checkToken = async () => {
+		try {
+			const { data } = await nikolaApi.get('/user/validate-token');
+			const { token, user } = data;
+
+			Cookie.set('token', token);
+			dispatch({type: 'Auth - Login', payload: user});
+
+		} catch (error) {
+			Cookie.remove('token');
+		}
+	};
 
 	const loginUser = async (email: string, password: string): Promise<boolean> => {
 		try {
