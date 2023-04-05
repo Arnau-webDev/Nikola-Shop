@@ -1,5 +1,7 @@
 import { PropsWithChildren, useReducer } from 'react';
-import { AuthContext, authReducer } from './';
+import { AuthContext, authReducer, registerResponse } from './';
+
+import axios from 'axios';
 
 import { IUser } from '@/interfaces';
 import { nikolaApi } from '@/api';
@@ -34,10 +36,35 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		}
 	};
 
+	const registerUser = async (name: string, email: string, password: string):Promise<registerResponse> => {
+		try {
+			const { data } = await nikolaApi.post('/user/register', { name, email, password });
+			const { token, user } = data;
+
+			Cookie.set('token', token);
+			dispatch({type: 'Auth - Login', payload: user});
+
+			return { hasError: false};
+		} catch (error) {
+			if(axios.isAxiosError(error)) {
+				return {
+					hasError: true,
+					message: error.response?.data.message
+				};
+			}
+
+			return {
+				hasError: true,
+				message: 'Could not register user, try again later'
+			};
+		}
+	};
+
 	return (
 		<AuthContext.Provider value={{
 			...state,
-			loginUser
+			loginUser,
+			registerUser
 		}}>
 			{ children }
 		</AuthContext.Provider>

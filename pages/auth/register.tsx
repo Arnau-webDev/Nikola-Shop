@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 
 import { AuthLayout } from '../../components/layouts';
 
+import { AuthContext } from '@/context';
 import { nikolaApi } from '@/api';
 import { validations } from '@/utils';
-
 
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
@@ -19,26 +20,27 @@ type FormData = {
 
 const RegisterPage = () => {
 
+	const router = useRouter();
+	const { registerUser } = useContext(AuthContext);
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 	const [showError, setShowError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
 
 	const onRegisterForm = async ( data: FormData ) => {
 		const { name, email, password } = data;
 		setShowError(false);
 
-		console.log(data);
+		const { hasError, message} = await registerUser(name, email, password);
 
-		try {
-			const { data } = await nikolaApi.post('/user/register', { email, password, name });
-			const { token, user } = data;
-
-			console.log(token, user);
-		} catch (error) {
-			console.log('Credentials error');
+		if(hasError) {
 			setShowError(true);
-
 			setTimeout(() => setShowError(false), 3000);
+			setErrorMessage(message || '');
+			return;
 		}
+
+		router.replace('/');
+
 	};
 	return (
 		<AuthLayout title={'Register'}>
