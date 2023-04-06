@@ -22,14 +22,15 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
 
 	useEffect(() => {
-		const cookiesToken = Cookie.get('token');
-
-		if(!cookiesToken) return; 
 		checkToken();
 	}, [])
 	;
 
 	const checkToken = async () => {
+		const cookiesToken = Cookie.get('token');
+
+		if(!cookiesToken) return; 
+
 		try {
 			const { data } = await nikolaApi.get('/user/validate-token');
 			const { token, user } = data;
