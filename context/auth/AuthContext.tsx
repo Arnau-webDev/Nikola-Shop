@@ -6,7 +6,8 @@ interface ContextProps {
     isLoggedIn: boolean;
     user?: IUser;
     loginUser: (email: string, password: string) => Promise<boolean>;
-    registerUser: (name: string, email: string, password: string) => Promise<registerResponse>
+    registerUser: (name: string, email: string, password: string) => Promise<registerResponse>;
+    logoutUser: () => void;
 }
 export interface registerResponse {
     hasError: boolean,

@@ -9,7 +9,7 @@ import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, Confirmati
 export const SideMenu = () => {
 
 	const router = useRouter();
-	const { isLoggedIn, user } = useContext(AuthContext);
+	const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
 	const {isMenuOpen, toggleSideMenu} = useContext(UIContext);
 
 	const [searchTerm, setSearchTerm] = useState('');
@@ -100,14 +100,14 @@ export const SideMenu = () => {
 
 					{ isLoggedIn ? 
 						(
-							<ListItem button>
+							<ListItem button onClick={logoutUser}>
 								<ListItemIcon>
 									<LoginOutlined/>
 								</ListItemIcon>
 								<ListItemText primary={'Logout'} />
 							</ListItem>
 						) : (
-							<ListItem button>
+							<ListItem button onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}>
 								<ListItemIcon>
 									<VpnKeyOutlined/>
 								</ListItemIcon>

@@ -24,6 +24,8 @@ const LoginPage = () => {
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 	const [showError, setShowError] = useState(false);
 
+	console.log(router);
+
 	const onLoginUser = async (data: FormData) => {
 
 		const { email, password } = data;
@@ -37,7 +39,8 @@ const LoginPage = () => {
 			return;
 		}
 
-		router.replace('/');
+		const destination = router.query.p?.toString() || '/';
+		router.replace(destination);
 	};
 
 	return (
@@ -91,7 +94,7 @@ const LoginPage = () => {
 						</Grid>
 
 						<Grid item xs={12} display='flex' justifyContent='center'>
-							<NextLink href="/auth/register" passHref legacyBehavior>
+							<NextLink href={router.query.p ? `/auth/register?p=${router.query.p}` : '/auth/register'} passHref legacyBehavior>
 								<Link underline='always' color='secondary'>
 									{'¿Don\'t have an account?'}
 								</Link>

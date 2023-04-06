@@ -1,11 +1,12 @@
 import { useEffect, useReducer, PropsWithChildren } from 'react';
+import { useRouter } from 'next/router';
 import { AuthContext, authReducer, registerResponse } from './';
 
 import axios from 'axios';
-
-import { IUser } from '@/interfaces';
-import { nikolaApi } from '@/api';
 import Cookie from 'js-cookie';
+
+import { nikolaApi } from '@/api';
+import { IUser } from '@/interfaces';
 
 export interface AuthState {
     isLoggedIn: boolean,
@@ -20,6 +21,7 @@ const Auth_INITIAL_STATE: AuthState = {
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
+	const router = useRouter();
 
 	useEffect(() => {
 		checkToken();
@@ -82,11 +84,18 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		}
 	};
 
+	const logoutUser = () => {
+		Cookie.remove('token');
+		Cookie.remove('cart');
+		router.reload();
+	};
+
 	return (
 		<AuthContext.Provider value={{
 			...state,
 			loginUser,
-			registerUser
+			registerUser,
+			logoutUser
 		}}>
 			{ children }
 		</AuthContext.Provider>
