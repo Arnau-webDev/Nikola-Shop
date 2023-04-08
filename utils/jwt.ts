@@ -17,6 +17,10 @@ export const isValidToken = (token: string):Promise<string> => {
 		throw new Error('No JWT seed available - Check enviroment variables');
 	}
 
+	if(token.length <= 10) {
+		return Promise.reject('JWT token not valid or not found');
+	}
+
 	return new Promise( (resolve, reject) => {
 		try {
 			jwt.verify(token, process.env.JWT_SECRET_SEED || '', (err, payload) => {
