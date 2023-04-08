@@ -2,6 +2,9 @@
 mongo/
 .env
 
+# files
+_unused_middleware.ts
+
 # dependencies
 /node_modules
 /.pnp

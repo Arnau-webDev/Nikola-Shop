@@ -101,7 +101,7 @@ const AddressPage = () => {
 								select
 								variant='filled'
 								label='Country'
-								defaultValue={'USA'}
+								defaultValue={Cookie.get('country') || 'USA'}
 								{ ...register('country')}
 								error={ !!errors.country }
 							>
