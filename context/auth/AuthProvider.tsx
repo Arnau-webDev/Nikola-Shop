@@ -1,4 +1,5 @@
 import { useEffect, useReducer, PropsWithChildren } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { AuthContext, authReducer, registerResponse } from './';
 
@@ -21,12 +22,21 @@ const Auth_INITIAL_STATE: AuthState = {
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
+	const { data, status } = useSession();
+
 	const router = useRouter();
 
 	useEffect(() => {
-		checkToken();
-	}, [])
-	;
+		if(status === 'authenticated') {
+			console.log(data?.user);
+			// dispatch({type: 'Auth - Login', payload: data?.user as IUser});
+		}
+	}, [status, data]);
+	
+
+	// useEffect(() => {
+	// 	checkToken();
+	// }, []);
 
 	const checkToken = async () => {
 		const cookiesToken = Cookie.get('token');
