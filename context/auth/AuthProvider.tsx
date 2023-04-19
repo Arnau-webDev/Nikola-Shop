@@ -87,6 +87,14 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const logoutUser = () => {
 		Cookie.remove('token');
 		Cookie.remove('cart');
+		Cookie.remove('firstName');
+		Cookie.remove('lastName');
+		Cookie.remove('address');
+		Cookie.remove('address2');
+		Cookie.remove('zip');
+		Cookie.remove('city');
+		Cookie.remove('country');
+		Cookie.remove('phone');
 		router.reload();
 	};
 

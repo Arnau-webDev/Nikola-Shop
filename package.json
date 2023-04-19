@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.10.0",
     "next": "13.1.6",
+    "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
