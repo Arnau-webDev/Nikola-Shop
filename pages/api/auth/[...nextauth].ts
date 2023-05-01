@@ -42,7 +42,7 @@ export default NextAuth({
 
 				switch (account.type) {
 				case 'oauth':
-					//PDT
+					token.user = await dbUsers.oAuthToDbUser( user?.email || '', user?.name || '');
 					break;
 				case 'credentials':
 					token.user = user;
@@ -65,4 +65,5 @@ export default NextAuth({
 		}
 	}
 });
+
 
