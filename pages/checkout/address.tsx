@@ -45,7 +45,6 @@ const AddressPage = () => {
 	const onSubmitAddress = ( data: FormData ) => {
 		updateAddress( data );
 		router.push('/checkout/summary');
-		console.log(data);
 	};
 
 	return (

@@ -24,8 +24,6 @@ const LoginPage = () => {
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 	const [showError, setShowError] = useState(false);
 
-	console.log(router);
-
 	const onLoginUser = async (data: FormData) => {
 
 		const { email, password } = data;
