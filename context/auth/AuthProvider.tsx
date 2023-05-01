@@ -1,5 +1,5 @@
 import { useEffect, useReducer, PropsWithChildren } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { AuthContext, authReducer, registerResponse } from './';
 
@@ -95,7 +95,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	const logoutUser = () => {
-		Cookie.remove('token');
 		Cookie.remove('cart');
 		Cookie.remove('firstName');
 		Cookie.remove('lastName');
@@ -105,7 +104,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		Cookie.remove('city');
 		Cookie.remove('country');
 		Cookie.remove('phone');
-		router.reload();
+
+		signOut();
+		// router.reload();
+		// Cookie.remove('token');
 	};
 
 	return (
