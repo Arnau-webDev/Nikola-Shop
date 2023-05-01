@@ -1,6 +1,7 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { dbUsers } from '@/database';
 
 declare module 'next-auth' {
     interface Session {
@@ -19,7 +20,8 @@ export default NextAuth({
 			},
 			async authorize(credentials) {
 				console.log(credentials);
-				return { name: 'John', email: 'whatever@google.com', role: 'admin'} as any;
+				// return { name: 'John', email: 'whatever@google.com', role: 'admin'} as any;
+				return await dbUsers.checkUserEmailPassword( credentials!.email, credentials!.password) as any;
 			}
 		}),
 		GithubProvider({
