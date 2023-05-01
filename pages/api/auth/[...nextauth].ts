@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { dbUsers } from '@/database';
@@ -9,7 +9,7 @@ declare module 'next-auth' {
     }
   }
 
-export default NextAuth({
+const authOptions: NextAuthOptions = {
 	// Configure one or more authentication providers
 	providers: [
 		CredentialsProvider({
@@ -19,7 +19,7 @@ export default NextAuth({
 				password: { label: 'Password', type: 'password', placeholder: 'password'},
 			},
 			async authorize(credentials) {
-				console.log(credentials);
+				// console.log(credentials);
 				// return { name: 'John', email: 'whatever@google.com', role: 'admin'} as any;
 				return await dbUsers.checkUserEmailPassword( credentials!.email, credentials!.password) as any;
 			}
@@ -30,13 +30,21 @@ export default NextAuth({
 		}),
 		// ...add more providers here
 	],
+	pages: {
+		signIn: '/auth/login',
+		newUser: '/auth/register ',
+	},
 	jwt: {
 		secret: process.env.JWT_SECRET_SEED,
 	},
-
+	session: {
+		maxAge: 2592000, // 30 days
+		strategy: 'jwt',
+		updateAge: 86400, // update daily
+	},
 	callbacks: {
 		async jwt({ token, account, user}) {
-			console.log({ token, account, user});
+			// console.log({ token, account, user});
 			if( account ) {
 				token.accessToken = account.access_token;
 
@@ -56,7 +64,7 @@ export default NextAuth({
 		},
 
 		async session({ session, token, user }) {
-			console.log({ token, session, user});
+			// console.log({ token, session, user});
 
 			session.accessToken = token.accessToken as any;
 			session.user = token.user as any;
@@ -64,6 +72,8 @@ export default NextAuth({
 			return session;
 		}
 	}
-});
+};
+
+export default NextAuth(authOptions);
 
 
