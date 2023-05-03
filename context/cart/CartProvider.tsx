@@ -1,8 +1,9 @@
 import { PropsWithChildren, useEffect, useReducer } from 'react';
 import { CartContext, cartReducer } from './';
-import { ICartProduct, ShippingAddress } from '@/interfaces';
+import { ICartProduct, IOrder, ShippingAddress } from '@/interfaces';
 
 import Cookie from 'js-cookie';
+import { nikolaApi } from '@/api';
 export interface CartState {
 	isLoaded: boolean;
     cart: ICartProduct[];
@@ -114,13 +115,42 @@ export const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		dispatch({type: 'Cart - Update Address', payload: address});
 	};
 
+	const createOrder = async () => {
+
+		if(!state.shippingAddress) {
+			throw new Error('No shipping address available');
+		}
+
+		const body: IOrder = {
+			orderItems: state.cart.map( product => ({
+				...product,
+				size: product.size!
+			})),
+			shippingAddress: state.shippingAddress,
+			numberOfItems: state.numberOfItems,
+			subTotal: state.subTotal,
+			tax: state.tax,
+			total: state.total,
+			isPaid: false,
+		};
+
+		try {
+			const { data } = await nikolaApi.post('/orders', body);
+
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<CartContext.Provider value={{
 			...state,
 			addProductToCart,
 			updateCartQuantity,
 			removeCartProduct,
-			updateAddress
+			updateAddress,
+			createOrder,
 		}}>
 			{ children }
 		</CartContext.Provider>
