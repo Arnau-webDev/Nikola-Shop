@@ -25,11 +25,11 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
 
 	const { orderItems, total } = req.body as IOrder;
 
-	const sessionHasToken: any = await getToken( { req });
+	const sessionToken: any = await getToken( { req });
 
-	console.log(sessionHasToken);
+	console.log(sessionToken);
 
-	if(!sessionHasToken) {
+	if(!sessionToken) {
 		return res.status(401).json({message: 'User needs to be authenticated to proceed!'});
 	}
 
@@ -58,7 +58,7 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
 	}
 
 	// All is GOOD :D
-	const userId = sessionHasToken.user._id;
+	const userId = sessionToken.user._id;
 	const newOrder = new Order({...req.body, isPaid: false, user: userId});
 	await newOrder.save();
 

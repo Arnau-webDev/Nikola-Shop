@@ -2,6 +2,7 @@ import { PropsWithChildren, useEffect, useReducer } from 'react';
 import { CartContext, cartReducer } from './';
 import { ICartProduct, IOrder, ShippingAddress } from '@/interfaces';
 
+import axios from 'axios';
 import Cookie from 'js-cookie';
 import { nikolaApi } from '@/api';
 export interface CartState {
@@ -115,7 +116,7 @@ export const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		dispatch({type: 'Cart - Update Address', payload: address});
 	};
 
-	const createOrder = async () => {
+	const createOrder = async (): Promise<{hasError: boolean; message: string; orderId?: string}> => {
 
 		if(!state.shippingAddress) {
 			throw new Error('No shipping address available');
@@ -135,11 +136,28 @@ export const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		};
 
 		try {
-			const { data } = await nikolaApi.post('/orders', body);
-
-			console.log(data);
+			const { data } = await nikolaApi.post<IOrder>('/orders', body);
+			dispatch({ type: 'Cart - Order complete'});
+			Cookie.set('cart', '[]');
+			
+			return {
+				hasError: false,
+				message: 'Order created successfully ',
+				orderId: data._id || ''
+			};
 		} catch (error) {
 			console.log(error);
+			if(axios.isAxiosError(error)) {
+				return {
+					hasError: true,
+					message: error.response?.data.message,
+				};
+			}
+
+			return {
+				hasError: true,
+				message: 'Uncontrolled error, contact the administrator'
+			};
 		}
 	};
 
