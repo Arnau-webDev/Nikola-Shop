@@ -5,14 +5,15 @@ import { CartContext } from '@/context';
 
 import { ItemCounter } from '../ui/ItemCounter';
 
-import { ICartProduct } from '@/interfaces';
+import { ICartProduct, IOrderItem } from '@/interfaces';
 
 import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
 interface Props {
     isEditable?: boolean;
+	products ?: IOrderItem[]
 }
 
-export const CartList: React.FC<Props> = ({ isEditable = false }) => {
+export const CartList: React.FC<Props> = ({ isEditable = false, products }) => {
 
 	const { cart: cartProducts, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
@@ -21,10 +22,12 @@ export const CartList: React.FC<Props> = ({ isEditable = false }) => {
 		updateCartQuantity(product);
 	};
 
+	const productsToShow = products ? products : cartProducts;
+
 	return (
 		<>
 			{
-				cartProducts.map(product => (
+				productsToShow.map(product => (
 					<Grid container spacing={2} sx={{ mb: 1 }} key={product.slug + product.size}>
 						<Grid item xs={3}>
 							<NextLink href={`/product/${product.slug}`} passHref legacyBehavior>
@@ -48,7 +51,7 @@ export const CartList: React.FC<Props> = ({ isEditable = false }) => {
 									? ( 
 										<ItemCounter 
 											currentValue={product.quantity}
-											updateQuantity={(newValue) => onNewCartQuantityValue(product, newValue)}
+											updateQuantity={(newValue) => onNewCartQuantityValue(product as ICartProduct, newValue)}
 										/> 
 									) 
 									: ( <Typography>{ product.quantity} {product.quantity > 1 ? 'Items' : 'Item'}</Typography>) 
@@ -61,7 +64,7 @@ export const CartList: React.FC<Props> = ({ isEditable = false }) => {
 								<Button 
 									variant='text' 
 									color='secondary'
-									onClick={() => removeCartProduct(product)}
+									onClick={() => removeCartProduct(product as ICartProduct)}
 								>
 									Remove
 								</Button> )}
