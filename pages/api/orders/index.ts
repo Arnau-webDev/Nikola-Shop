@@ -1,15 +1,14 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 import { IOrder } from '@/interfaces';
 import { getToken } from 'next-auth/jwt';
 import { db } from '@/database';
-import { Product } from '@/models';
+import { Product, Order } from '@/models';
 
-type Data = {
-    message: string
-}
+type Data = 
+| { message: string }
+|  IOrder; 
 
 export default function handler (req: NextApiRequest, res: NextApiResponse<Data>) {
 
@@ -40,7 +39,7 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
 
 	try {
 		const totalPriceOfItems = orderItems.reduce((prev, current) => {
-			const currentProductPrice = dbProducts.find( prod => prod._id === current._id)?.price;
+			const currentProductPrice = dbProducts.find( prod => prod.id === current._id)?.price;
 
 			if(!currentProductPrice) throw new Error('Check cart info, this product doesn\'t exist');
 			
@@ -59,8 +58,11 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
 	}
 
 	// All is GOOD :D
+	const userId = sessionHasToken.user._id;
+	const newOrder = new Order({...req.body, isPaid: false, user: userId});
+	await newOrder.save();
 
 	await db.disconnect();
 
-	return res.status(201).json( req.body );
+	return res.status(201).json( newOrder );
 }
