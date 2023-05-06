@@ -27,8 +27,6 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
 
 	const sessionToken: any = await getToken( { req });
 
-	console.log(sessionToken);
-
 	if(!sessionToken) {
 		return res.status(401).json({message: 'User needs to be authenticated to proceed!'});
 	}

@@ -5,7 +5,6 @@ import { IOrder } from '@/interfaces';
 import { Order } from '@/models';
 
 export const getOrderById = async (id: string):Promise<IOrder | null> => {
-	console.log('Entra');
 	if(!isValidObjectId(id)) return null;
 
 	await db.connect();

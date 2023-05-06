@@ -14,8 +14,6 @@ interface Props {
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
-	console.log(order);
-
 	const { shippingAddress } = order;
 
 	return (
