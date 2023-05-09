@@ -49,8 +49,6 @@ interface Props {
 
 const HistoryPage: NextPage<Props> = ({orders}) => {
 
-	console.log({orders});
-
 	const rows = orders.map((order, index) => (
 		{
 			id: index + 1,
@@ -60,7 +58,6 @@ const HistoryPage: NextPage<Props> = ({orders}) => {
 		}
 	));
 
-	console.log(rows);
 	return (
 		<ShopLayout title="Order History" pageDescription="Order Hystory from client">
 			<Typography variant='h1' component='h1'>Order History</Typography>
