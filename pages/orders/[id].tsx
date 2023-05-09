@@ -25,7 +25,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 				: ( <Chip  sx={{ my: 2}} label='Order not Paid' variant='outlined' color='error' icon={<CreditCardOffOutlined />} />)
 			}
 
-			<Grid container sx={{ mt: 3 }}>
+			<Grid container sx={{ mt: 3 }} className='fadeIn'>
 				<Grid item xs={12} sm={12} md={6}>
 					<CartList products={  order.orderItems } />
 				</Grid>
