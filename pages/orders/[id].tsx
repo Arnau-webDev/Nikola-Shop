@@ -1,5 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+
 import { ShopLayout } from '@/components/layouts';
 import { CartList, OrderSummary } from '@/components/cart';
 
@@ -71,7 +73,26 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 											/>
 
 										):(
-											<h2>Go to Payment</h2>
+											<PayPalButtons 
+												createOrder={(data, actions) => {
+													return actions.order.create({
+														purchase_units: [
+															{
+																amount: {
+																	value: '2000.19',
+																},
+															},
+														],
+													});
+												}}
+												onApprove={(data, actions) => {
+													return actions.order!.capture().then((details) => {
+														console.log({ details});
+														const name = details?.payer?.name?.given_name;
+														alert(`Transaction completed by ${name}`);
+													});
+												}}
+											/>
 										)
 								}
 							</Box>

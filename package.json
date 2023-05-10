@@ -15,6 +15,7 @@
     "@mui/material": "^5.11.9",
     "@mui/x-data-grid": "^5.17.24",
     "@next/font": "13.1.6",
+    "@paypal/react-paypal-js": "^7.8.3",
     "@types/node": "18.13.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.10",
