@@ -22,7 +22,7 @@ const columns: GridColDef[] = [
 			return (
 				params.row.paid
 					? <Chip color="success" label="Is Paid" variant='outlined' />
-					: <Chip color="error" label="Is Not Paid" variant='outlined' />
+					: <Chip color="error" label="Not Paid" variant='outlined' />
 			);
 		}
 	},
