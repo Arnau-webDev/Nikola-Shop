@@ -1,5 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { useRouter } from 'next/router';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 
 import { ShopLayout } from '@/components/layouts';
@@ -7,6 +8,7 @@ import { CartList, OrderSummary } from '@/components/cart';
 
 import { IOrder } from '@/interfaces';
 import { dbOrders } from '@/database';
+import { nikolaApi } from '@/api';
 
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
 import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
@@ -15,8 +17,36 @@ interface Props {
 	order: IOrder
 }
 
+export type OrderResponseBody = {
+    id: string;
+    status:
+        | 'CREATED'
+        | 'SAVED'
+        | 'APPROVED'
+        | 'VOIDED'
+        | 'COMPLETED'
+        | 'PAYER_ACTION_REQUIRED';
+};
+
 const OrderPage: NextPage<Props> = ({ order }) => {
+	const router = useRouter();
 	const { shippingAddress } = order;
+
+	const onOrderCompleted = async ( details: OrderResponseBody ) => {
+		if( details.status !== 'COMPLETED') return alert('No payment in Paypal');
+
+		try {
+			await nikolaApi.post('/orders/pay', {
+				transactionId: details.id,
+				orderId: order._id,
+			});
+
+			router.reload();
+		} catch (error) {
+			console.log(error);
+			alert('Error!');
+		}
+	};
 
 	return (
 		<ShopLayout title="Summary - Order summary" pageDescription="Order summary">
@@ -66,7 +96,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 										? (
 											<Chip 
 												sx={{ my: 2 }}
-												label="Orden ya fue pagada"
+												label="Orden is Paid"
 												variant='outlined'
 												color="success"
 												icon={ <CreditScoreOutlined /> }
@@ -87,8 +117,9 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 												}}
 												onApprove={(data, actions) => {
 													return actions.order!.capture().then((details) => {
-														console.log({ details});
-														const name = details?.payer?.name?.given_name;
+														onOrderCompleted(details);
+														// console.log({ details});
+														// const name = details?.payer?.name?.given_name;
 													});
 												}}
 											/>
