@@ -13,7 +13,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 	switch(req.method) {
 	case 'GET':
 		return getUsers(req, res);
-	case 'POST':
+	case 'PUT':
 		return updateUser(req, res);
 	default:
 		return res.status(400).json({ message: 'Bad request'});

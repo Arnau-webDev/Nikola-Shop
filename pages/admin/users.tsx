@@ -20,12 +20,11 @@ const UsersPage = () => {
 		}
 	}, [data]);
     
-
 	if ( !data && !error ) return (<></>);
 
 	const onRoleUpdated = async( userId: string, newRole: string ) => {
 
-		const previosUsers = users.map( user => ({ ...user }));
+		const previousUsers = users.map( user => ({ ...user }));
 		const updatedUsers = users.map( user => ({
 			...user,
 			role: userId === user._id ? newRole : user.role
@@ -38,22 +37,21 @@ const UsersPage = () => {
 			await nikolaApi.put('/admin/users', {  userId, role: newRole });
 
 		} catch (error) {
-			setUsers( previosUsers );
+			setUsers( previousUsers );
 			console.log(error);
-			alert('No se pudo actualizar el role del usuario');
+			alert('Could not update user role');
 		}
-
 	};
 
 
 	const columns: GridColDef[] = [
-		{ field: 'email', headerName: 'Correo', width: 250 },
-		{ field: 'name', headerName: 'Nombre completo', width: 300 },
+		{ field: 'email', headerName: 'Email', width: 250 },
+		{ field: 'name', headerName: 'Complete Name', width: 300 },
 		{
 			field: 'role', 
-			headerName: 'Rol', 
+			headerName: 'Role', 
 			width: 300,
-			renderCell: ({row}: GridValueGetterParams) => {
+			renderCell: ({row}) => {
 				return (
 					<Select
 						value={ row.role }
