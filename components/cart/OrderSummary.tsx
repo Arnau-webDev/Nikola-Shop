@@ -12,10 +12,11 @@ interface Props {
         subTotal: number;
         total: number;
         tax: number;
-    }
+    },
+	isEditable?: boolean
 }
 
-export const OrderSummary: React.FC<Props> = ({ orderValues }) => {
+export const OrderSummary: React.FC<Props> = ({ orderValues, isEditable = true }) => {
 
 	const { numberOfItems, subTotal, total, tax } = useContext(CartContext);
 
@@ -25,7 +26,7 @@ export const OrderSummary: React.FC<Props> = ({ orderValues }) => {
 		<Grid container>
 			<Grid item xs={6} display='flex' alignItems='center'>
 				<Typography>Products</Typography>
-				<Box sx={{ mx: 1}}>
+				<Box sx={{ display: isEditable ? 'flex' : 'none', mx: 1}}>
 					<NextLink href='/cart' passHref legacyBehavior>
 						<Link underline='always' color='secondary'>( Edit )</Link>
 					</NextLink>
