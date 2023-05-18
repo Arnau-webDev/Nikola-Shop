@@ -36,7 +36,7 @@ const CardPage = () => {
 							<Typography variant='h2'>Order</Typography>
 							<Divider sx={{my: 1}} />
 
-							{<OrderSummary />}
+							{<OrderSummary isEditable={false}/>}
 
 							<Box sx={{ mt: 3}}>
 								<Button color='secondary' className='circular-btn' fullWidth href='/checkout/address'>

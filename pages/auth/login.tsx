@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { getSession, signIn, getProviders } from 'next-auth/react';
@@ -6,7 +6,6 @@ import { getSession, signIn, getProviders } from 'next-auth/react';
 import NextLink from 'next/link';
 import { AuthLayout } from '../../components/layouts';
 
-import { AuthContext } from '@/context';
 import { validations } from '@/utils';
 
 import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
@@ -23,7 +22,6 @@ type FormData = {
 const LoginPage = () => {
 
 	const router = useRouter();
-	const { loginUser } = useContext( AuthContext);
 	const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 	const [showError, setShowError] = useState(false);
 
@@ -41,16 +39,6 @@ const LoginPage = () => {
 		const { email, password } = data;
 		setShowError(false);
 
-		// const isValidLogin = await loginUser(email, password);
-
-		// if (!isValidLogin) {
-		// 	setShowError(true);
-		// 	setTimeout(() => setShowError(false), 3000);
-		// 	return;
-		// }
-		
-		// const destination = router.query.p?.toString() || '/';
-		// router.replace(destination);
 		await signIn('credentials', { email, password});
 
 	};

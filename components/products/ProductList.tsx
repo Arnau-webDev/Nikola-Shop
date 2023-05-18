@@ -3,7 +3,7 @@ import { IProduct } from '../../interfaces/products';
 import { ProductCard } from './ProductCard';
 
 interface Props {
-    products: IProduct[]
+    products: IProduct[];
 }
 
 export const ProductList: React.FC<Props> = ({ products }) => {
