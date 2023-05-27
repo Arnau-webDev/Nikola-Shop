@@ -17,10 +17,6 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
-	const onDeleteTag = ( tag: string ) => {
-
-	};
-
 	return (
 		<AdminLayout 
 			title={'Producto'} 
@@ -48,12 +44,6 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
-							// { ...register('name', {
-							//     required: 'Este campo es requerido',
-							//     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
-							// })}
-							// error={ !!errors.name }
-							// helperText={ errors.name?.message }
 						/>
 
 						<TextField
