@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 
@@ -33,6 +33,8 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
+	const [newTagValue, setNewTagValue] = useState('');
+
 	const {register, handleSubmit, formState:{ errors }, getValues, setValue, watch} = useForm<FormData>({
 		defaultValues: product
 	});
@@ -54,8 +56,19 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 		console.log(form);
 	};
 
+	const onNewTag = () => {
+		const newTag = newTagValue.trim().toLocaleLowerCase();
+		setNewTagValue('');
+		const currentTags = getValues('tags');
+
+		if ( currentTags.includes(newTag) ) return;
+
+		currentTags.push(newTag);
+	};
+
 	const onDeleteTag = (tag: string) => {
-		// getValues('');
+		const updatedTags = getValues('tags').filter( t => t !== tag );
+		setValue('tags', updatedTags, { shouldValidate: true });
 	};
 
 	const onChnageSize = (size: string) => {
@@ -220,11 +233,14 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						/>
 
 						<TextField
-							label="Etiquetas"
+							label="Tags"
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
 							helperText="Press [spacebar] to add"
+							value={ newTagValue}
+							onChange={(e) => setNewTagValue(e.target.value)}
+							onKeyUp={(e) => e.code === 'Space' ? onNewTag() : undefined}
 						/>
                         
 						<Box sx={{
@@ -236,7 +252,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						}}
 						component="ul">
 							{
-								product.tags.map((tag) => {
+								getValues('tags').map((tag) => {
 
 									return (
 										<Chip
