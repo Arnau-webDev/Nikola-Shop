@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 
@@ -33,9 +33,22 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
-	const {register, handleSubmit, formState:{ errors }, getValues, setValue} = useForm<FormData>({
+	const {register, handleSubmit, formState:{ errors }, getValues, setValue, watch} = useForm<FormData>({
 		defaultValues: product
 	});
+
+	useEffect(() => {
+		const subscription = watch(( value, { name, type } ) => {
+			if(name === 'title') {
+				const newSlug = value.title?.trim().replaceAll(' ', '_').replaceAll('\'', '').toLocaleLowerCase() || '';
+
+				setValue('slug', newSlug, { shouldValidate: true});
+			}
+
+			return () => subscription.unsubscribe();
+		});
+	}, [watch, setValue]);
+	
 
 	const onSubmit = ( form: FormData) => {
 		console.log(form);
