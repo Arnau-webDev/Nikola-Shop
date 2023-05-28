@@ -33,12 +33,16 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
-	const {register, handleSubmit, formState:{ errors }} = useForm<FormData>({
+	const {register, handleSubmit, formState:{ errors }, getValues, setValue} = useForm<FormData>({
 		defaultValues: product
 	});
 
 	const onSubmit = ( form: FormData) => {
 		console.log(form);
+	};
+
+	const onDeleteTag = (tag: string) => {
+		// getValues('');
 	};
 
 	return (
@@ -125,8 +129,8 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 							<FormLabel>Type</FormLabel>
 							<RadioGroup
 								row
-								// value={ status }
-								// onChange={ onStatusChanged }
+								value={getValues('type')}
+								onChange={(e) => setValue('type', e.target.value, {shouldValidate: true})}
 							>
 								{
 									validTypes.map( option => (
@@ -145,8 +149,8 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 							<FormLabel>Gender</FormLabel>
 							<RadioGroup
 								row
-								// value={ status }
-								// onChange={ onStatusChanged }
+								value={getValues('gender')}
+								onChange={(e) => setValue('gender', e.target.value, {shouldValidate: true})}
 							>
 								{
 									validGender.map( option => (
@@ -210,6 +214,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 										<Chip
 											key={tag}
 											label={tag}
+											onDelete={ () => onDeleteTag(tag)}
 											color="primary"
 											size='small'
 											sx={{ ml: 1, mt: 1}}
