@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 import { GetServerSideProps } from 'next';
+import { useForm } from 'react-hook-form';
+
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
 import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
@@ -11,11 +13,33 @@ const validTypes  = ['shirts','pants','hoodies','hats'];
 const validGender = ['men','women','kid','unisex'];
 const validSizes = ['XS','S','M','L','XL','XXL','XXXL'];
 
+interface FormData {
+    _id?       : string;
+    description: string;
+    images     : string[];
+    inStock    : number;
+    price      : number;
+    sizes      : string[];
+    slug       : string;
+    tags       : string[];
+    title      : string;
+    type       : string;
+    gender     : string;
+}
+
 interface Props {
     product: IProduct;
 }
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
+
+	const {register, handleSubmit, formState:{ errors }} = useForm<FormData>({
+		defaultValues: product
+	});
+
+	const onSubmit = ( form: FormData) => {
+		console.log(form);
+	};
 
 	return (
 		<AdminLayout 
@@ -23,7 +47,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 			subtitle={`Editando: ${ product.title }`}
 			icon={ <DriveFileRenameOutline /> }
 		>
-			<form>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
 					<Button 
 						color="secondary"
@@ -31,7 +55,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						sx={{ width: '150px' }}
 						type="submit"
 					>
-                        Guardar
+                        Save
 					</Button>
 				</Box>
 
@@ -40,40 +64,65 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 					<Grid item xs={12} sm={ 6 }>
 
 						<TextField
-							label="Título"
+							label="Title"
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
+							{ ...register('title', {
+								required: 'This field is required',
+								minLength: { value: 2, message: 'Needs at least 2 caracteres' }
+							})}
+							error={ !!errors.title }
+							helperText={ errors.title?.message }
 						/>
 
 						<TextField
-							label="Descripción"
+							label="Description"
 							variant="filled"
 							fullWidth 
 							multiline
+							rows={5}
 							sx={{ mb: 1 }}
+							{ ...register('description', {
+								required: 'This field is required',
+								minLength: { value: 2, message: 'Needs at least 2 caracteres' }
+							})}
+							error={ !!errors.description }
+							helperText={ errors.description?.message }
 						/>
 
 						<TextField
-							label="Inventario"
+							label="Inventory"
 							type='number'
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
+							{ ...register('inStock', {
+								required: 'This field is required',
+								min: { value: 0, message: 'Needs at least 0' }
+							})}
+							error={ !!errors.inStock }
+							helperText={ errors.inStock?.message }
 						/>
                         
 						<TextField
-							label="Precio"
+							label="Price"
 							type='number'
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
+							{ ...register('price', {
+								required: 'This field is required',
+								minLength: { value: 2, message: 'Needs at least 2 caracteres' }
+							})}
+							error={ !!errors.title }
+							helperText={ errors.title?.message }
 						/>
 
 						<Divider sx={{ my: 1 }} />
 
 						<FormControl sx={{ mb: 1 }}>
-							<FormLabel>Tipo</FormLabel>
+							<FormLabel>Type</FormLabel>
 							<RadioGroup
 								row
 								// value={ status }
@@ -93,7 +142,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						</FormControl>
 
 						<FormControl sx={{ mb: 1 }}>
-							<FormLabel>Género</FormLabel>
+							<FormLabel>Gender</FormLabel>
 							<RadioGroup
 								row
 								// value={ status }
@@ -113,7 +162,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						</FormControl>
 
 						<FormGroup>
-							<FormLabel>Tallas</FormLabel>
+							<FormLabel>Sizes</FormLabel>
 							{
 								validSizes.map(size => (
 									<FormControlLabel key={size} control={<Checkbox />} label={ size } />
@@ -130,6 +179,12 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 							variant="filled"
 							fullWidth
 							sx={{ mb: 1 }}
+							{ ...register('slug', {
+								required: 'This field is required',
+								validate: (val) => val.trim().includes(' ') ? 'Cannot have empty spaces' : undefined
+							})}
+							error={ !!errors.slug }
+							helperText={ errors.slug?.message }
 						/>
 
 						<TextField
@@ -137,7 +192,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 							variant="filled"
 							fullWidth 
 							sx={{ mb: 1 }}
-							helperText="Presiona [spacebar] para agregar"
+							helperText="Press [spacebar] to add"
 						/>
                         
 						<Box sx={{
@@ -155,7 +210,6 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 										<Chip
 											key={tag}
 											label={tag}
-											onDelete={ () => onDeleteTag(tag)}
 											color="primary"
 											size='small'
 											sx={{ ml: 1, mt: 1}}
