@@ -17,8 +17,7 @@ export default function handler (req: NextApiRequest, res: NextApiResponse<Data>
 	case 'PUT':
 		return updateProduct(req, res);
 	case 'POST':
-		// return postProduct();
-		break;
+		return createProduct(req, res);
 	default:
 		return res.status(400).json({ message: 'Hola request' });
 	}
@@ -67,6 +66,38 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
 		await db.disconnect();
 		return res.status(400).json({ message: 'Check updateProduct server logs'});
 	}
+
+};
+
+const createProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+	const { images = [] } = req.body as IProduct;
+
+	if( images.length < 2) return res.status(400).json({ message: 'At least 2 images needed!'});
+
+	// TODO: get images absolute path
+
+	try {
+		await db.connect();
+		const productInDb = await Product.findOne({ slug: req.body.slug });
+
+		if(productInDb) {
+			await db.disconnect();
+			return res.status(400).json({ message: 'A product with that slug already exists in our records'});
+		}
+
+		const product = new Product( req.body );
+		await product.save();
+
+		await db.disconnect();
+
+		res.status(201).json( product );
+		
+	} catch (error) {
+		console.log(error);
+		await db.disconnect();
+		return res.status(400).json({ message: 'Check createProduct server logs'});
+	}
+
 
 };
 
