@@ -20,7 +20,7 @@ export default function handler (req: NextApiRequest, res: NextApiResponse<Data>
 		// return postProduct();
 		break;
 	default:
-		return res.status(400).json({ message: 'Bad request' });
+		return res.status(400).json({ message: 'Hola request' });
 	}
 
 }
@@ -37,11 +37,12 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 };
 
 const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+
 	const { _id = '', images = [] } = req.body as IProduct;
 
-	if( isValidObjectId(_id)) return res.status(400).json({ message: 'Product ID is not valid!'});
+	if( !isValidObjectId(_id)) return res.status(400).json({ message: 'Product ID is not valid!'});
 
-	if(images.length <= 2) return res.status(400).json({ message: 'At least 2 images needed'});
+	if(images.length < 2) return res.status(400).json({ message: 'At least 2 images needed'});
 
 	// TODO: get images absolute path
 
@@ -64,7 +65,7 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
 	} catch (error) {
 		console.log(error);
 		await db.disconnect();
-		return res.status(400).json({ message: 'Check updateProducts server logs'});
+		return res.status(400).json({ message: 'Check updateProduct server logs'});
 	}
 
 };

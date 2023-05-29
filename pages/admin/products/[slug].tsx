@@ -7,6 +7,7 @@ import { IProduct } from '../../../interfaces';
 import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
 import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
+import { nikolaApi } from '@/api';
 
 
 const validTypes  = ['shirts','pants','hoodies','hats'];
@@ -34,6 +35,7 @@ interface Props {
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
 	const [newTagValue, setNewTagValue] = useState('');
+	const [isSaving, setIsSaving] = useState(false);
 
 	const {register, handleSubmit, formState:{ errors }, getValues, setValue, watch} = useForm<FormData>({
 		defaultValues: product
@@ -52,8 +54,29 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 	}, [watch, setValue]);
 	
 
-	const onSubmit = ( form: FormData) => {
-		console.log(form);
+	const onSubmit = async ( form: FormData) => {
+		if( form.images.length < 2) return alert('At least 2 images required');
+
+		setIsSaving(true);
+
+		try {
+			const { data } = await nikolaApi({
+				url: '/admin/products',
+				method: 'PUT',
+				data: form
+			});
+
+			console.log(data);
+			if(!form._id) {
+				//TODO: reload window
+			} else {
+				setIsSaving(false);
+			}
+
+		} catch (error) {
+			console.log(error);
+			setIsSaving(false);
+		}
 	};
 
 	const onNewTag = () => {
@@ -94,6 +117,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 						startIcon={ <SaveOutlined /> }
 						sx={{ width: '150px' }}
 						type="submit"
+						disabled={isSaving}
 					>
                         Save
 					</Button>
