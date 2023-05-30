@@ -1,5 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
 import { AdminLayout } from '../../../components/layouts';
@@ -9,7 +10,6 @@ import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { nikolaApi } from '@/api';
 import { Product } from '@/models';
-import { useRouter } from 'next/router';
 
 
 const validTypes  = ['shirts','pants','hoodies','hats'];
@@ -40,6 +40,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 	const [isSaving, setIsSaving] = useState(false);
 
 	const router = useRouter();
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const {register, handleSubmit, formState:{ errors }, getValues, setValue, watch} = useForm<FormData>({
 		defaultValues: product
@@ -56,6 +57,26 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 			return () => subscription.unsubscribe();
 		});
 	}, [watch, setValue]);
+
+	const onFilesSelected = async (event: ChangeEvent<HTMLInputElement>) => {
+		console.log('hola');
+		const { target } = event;
+
+		if(!target.files || target.files.length === 0) return;
+
+		console.log(target.files);
+
+		try {
+			for( const file of target.files ) {
+				console.log( file );
+			}
+
+
+		} catch (error) {
+			console.log({ error });
+		}
+		
+	};
 	
 
 	const onSubmit = async ( form: FormData) => {
@@ -304,12 +325,21 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 								fullWidth
 								startIcon={ <UploadOutlined /> }
 								sx={{ mb: 3 }}
+								onClick={() => fileInputRef.current?.click()}
 							>
-                                Cargar imagen
+                                Load image
 							</Button>
+							<input 
+								ref={fileInputRef}
+								type='file'
+								multiple
+								accept='image/png, image/gif, image/jpeg'
+								onChange={onFilesSelected}
+								style={{ display: 'none'}}
+							/>
 
 							<Chip 
-								label="Es necesario al 2 imagenes"
+								label="At least 2 images needed"
 								color='error'
 								variant='outlined'
 							/>
@@ -327,7 +357,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 												/>
 												<CardActions>
 													<Button fullWidth color="error">
-                                                        Borrar
+                                                        Delete
 													</Button>
 												</CardActions>
 											</Card>
