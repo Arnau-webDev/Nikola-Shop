@@ -8,6 +8,8 @@ import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons
 import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { nikolaApi } from '@/api';
+import { Product } from '@/models';
+import { useRouter } from 'next/router';
 
 
 const validTypes  = ['shirts','pants','hoodies','hats'];
@@ -37,6 +39,8 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 	const [newTagValue, setNewTagValue] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 
+	const router = useRouter();
+
 	const {register, handleSubmit, formState:{ errors }, getValues, setValue, watch} = useForm<FormData>({
 		defaultValues: product
 	});
@@ -62,13 +66,13 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 		try {
 			const { data } = await nikolaApi({
 				url: '/admin/products',
-				method: 'PUT',
+				method: form._id ? 'PUT' : 'POST',
 				data: form
 			});
 
 			console.log(data);
 			if(!form._id) {
-				//TODO: reload window
+				router.replace(`/admin/products/${form.slug}`);
 			} else {
 				setIsSaving(false);
 			}
@@ -342,16 +346,23 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 	);
 };
 
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     
 	const { slug = ''} = query;
-    
-	const product = await dbProducts.getProductBySlug(slug.toString());
 
+	let product: IProduct | null;
+
+	if( slug === 'new') {
+		const tempProduct = JSON.parse(JSON.stringify(new Product()));
+		delete tempProduct._id;
+		tempProduct.images = ['img1.jpg', 'img2.jpg'];
+
+		product = tempProduct;
+	} else {
+		product = await dbProducts.getProductBySlug(slug.toString());
+	}
+    
 	if ( !product ) {
 		return {
 			redirect: {
