@@ -68,7 +68,11 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 
 		try {
 			for( const file of target.files ) {
-				console.log( file );
+				const formData = new FormData();
+				formData.append('file', file);
+				const { data } = await nikolaApi.post<{ message: string}>('/admin/upload', formData);
+				console.log(data);
+				// setValue('images', [...getValues('images'), data.message], { shouldValidate: true });
 			}
 
 
