@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import formidable from 'formidable';
+import fs from 'fs';
 
 type Data = {
     message: string
@@ -25,16 +26,40 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
 }
 
-// const parseFiles = async(req: NextApiRequest): Promise<string> => {
+const saveFile = async( file: formidable.File ): Promise<string | undefined> => {
 
-// 	// TODO: parse with formidable
-// };
+	const data = fs.readFileSync( file.filepath );
+	fs.writeFileSync(`./public/${ file.originalFilename }`, data);
+	fs.unlinkSync( file.filepath ); // elimina
+	return;
+
+};
+
+const parseFiles = async(req: NextApiRequest): Promise<string> => {
+
+	return new Promise( (resolve, reject) => {
+
+		const form = new formidable.IncomingForm();
+		form.parse( req, async( err, fields, files ) => {
+			// console.log({ err, fields, files });
+
+			if ( err ) {
+				return reject(err);
+			}
+
+			const filePath = await saveFile( files.file as formidable.File );
+			resolve(filePath!);
+		});
+
+	}); 
+
+};
 
 
 const uploadFile = async(req: NextApiRequest, res: NextApiResponse<Data>) => {
     
-	// const imageUrl = await parseFiles(req);
+	const imageUrl = await parseFiles(req);
     
-	return res.status(200).json({ message: 'imageUrl' });
+	return res.status(200).json({ message: imageUrl });
 
 };
