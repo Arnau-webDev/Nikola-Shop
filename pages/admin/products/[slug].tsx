@@ -64,8 +64,6 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 
 		if(!target.files || target.files.length === 0) return;
 
-		console.log(target.files);
-
 		try {
 			for( const file of target.files ) {
 				const formData = new FormData();
