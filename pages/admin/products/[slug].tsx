@@ -69,15 +69,17 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 				const formData = new FormData();
 				formData.append('file', file);
 				const { data } = await nikolaApi.post<{ message: string}>('/admin/upload', formData);
-				console.log(data);
-				// setValue('images', [...getValues('images'), data.message], { shouldValidate: true });
+				setValue('images', [...getValues('images'), data.message], { shouldValidate: true });
 			}
 
 
 		} catch (error) {
 			console.log({ error });
 		}
-		
+	};
+
+	const onDeleteImage = (image: string) => {
+		setValue('images', getValues('images').filter( img => img !== image), {shouldValidate: true});
 	};
 	
 
@@ -348,17 +350,17 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 
 							<Grid container spacing={2}>
 								{
-									product.images.map( img => (
+									getValues('images').map( img => (
 										<Grid item xs={4} sm={3} key={img}>
 											<Card>
 												<CardMedia 
 													component='img'
 													className='fadeIn'
-													image={ `/products/${ img }` }
+													image={ img }
 													alt={ img }
 												/>
 												<CardActions>
-													<Button fullWidth color="error">
+													<Button fullWidth color="error" onClick={() => onDeleteImage(img)}>
                                                         Delete
 													</Button>
 												</CardActions>
