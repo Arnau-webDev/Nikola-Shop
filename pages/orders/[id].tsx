@@ -134,8 +134,6 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 													onApprove={(data, actions) => {
 														return actions.order!.capture().then((details) => {
 															onOrderCompleted(details);
-														// console.log({ details});
-														// const name = details?.payer?.name?.given_name;
 														});
 													}}
 												/>

@@ -32,5 +32,10 @@ async function getProductBySlug(req: NextApiRequest, res: NextApiResponse<Data>)
 		});
 	}
 
+	product.images = product.images.map((img) => {
+		return img.includes('http') ? img : `${ process.env.HOST_NAME }products/${ img }`;
+	});
+
+
 	return res.json(product);
 }
