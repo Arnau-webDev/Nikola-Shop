@@ -79,10 +79,11 @@ const AddressPage = () => {
 					</Grid>
 
 					<Grid item xs={12} sm={6}>
-						<TextField 
-							label='Address' 
-							variant='filled' 
-							fullWidth 
+						<TextField
+							// select
+							variant="filled"
+							label="Address"
+							fullWidth
 							{ ...register('address', {
 								required: 'This field is required'
 							})}
@@ -100,8 +101,9 @@ const AddressPage = () => {
 								select
 								variant='filled'
 								label='Country'
-								defaultValue={'USA'}
-								{ ...register('country')}
+								{ ...register('country', {
+									required: 'This field is required'
+								})}
 								error={ !!errors.country }
 							>
 								{countries.map((country) => (
