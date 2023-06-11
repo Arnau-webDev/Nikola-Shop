@@ -1,6 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 mongo/
 .env
+.env.development
+.env.production
 
 # files
 _unused_middleware.ts
