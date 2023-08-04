@@ -8,11 +8,11 @@ import { AuthLayout } from '../../components/layouts';
 
 import { validations } from '@/utils';
 
-import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
 
-import { ErrorOutline } from '@mui/icons-material';
+// import { ErrorOutline } from '@mui/icons-material';
 
 type FormData = {
 	email: string,
@@ -47,13 +47,13 @@ const LoginPage = () => {
 		<AuthLayout title={'Login'}>
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box sx={{ width: 350, padding:'10px 20px' }}>
-					<Chip 
+					{/* <Chip 
 						label='User or password does not exist'
 						color='error'
 						icon={ <ErrorOutline /> }
 						className='fadeIn'
 						sx={{ display: showError ? 'flex' : 'none', my: 4, mx: 4}}
-					/>
+					/> */}
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant='h1' component="h1">Log In</Typography>

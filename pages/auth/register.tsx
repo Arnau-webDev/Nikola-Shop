@@ -10,8 +10,8 @@ import { AuthLayout } from '../../components/layouts';
 import { AuthContext } from '@/context';
 import { validations } from '@/utils';
 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
+import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+// import { ErrorOutline } from '@mui/icons-material';
 
 type FormData = {
 	name: string,
@@ -50,13 +50,13 @@ const RegisterPage = () => {
 			<form onSubmit={handleSubmit(onRegisterForm)} noValidate>
 
 				<Box sx={{ width: 350, padding:'10px 20px' }}>
-					<Chip 
+					{/* <Chip 
 						label='User already exists'
 						color='error'
 						icon={ <ErrorOutline /> }
 						className='fadeIn'
 						sx={{ display: showError ? 'flex' : 'none', my: 4, mx: 4}}
-					/>
+					/> */}
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant='h1' component="h1">Crear cuenta</Typography>
